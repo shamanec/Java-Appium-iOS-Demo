@@ -4,7 +4,7 @@ This is a Maven demo project built with Java 8 that can be used to test out the 
 
 ## Setup
 
-Just build the project and execute any of the 3 tests in the Tests.java class file.
+Just build the project and execute any/all of the 3 tests in the **Tests.java** class.
 
 ## Content
 
