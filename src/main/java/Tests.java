@@ -39,7 +39,7 @@ public class Tests {
     }
 
     @Test
-    public void nativeImageTest() throws IOException, URISyntaxException {
+    public void nativeImageTest() throws IOException {
         //Get the file
         File refImgFile = Paths.get("src/main/resources/wi-fi-image.png").toFile();
         //Get the reference image as Base64 string
