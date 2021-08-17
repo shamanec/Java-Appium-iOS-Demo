@@ -24,6 +24,7 @@ import java.util.Base64;
 public class Tests {
 
     WebDriver driver;
+
     @Test
     public void nativeTest() throws MalformedURLException {
         DesiredCapabilities capabilities = new DesiredCapabilities();
@@ -32,7 +33,7 @@ public class Tests {
 
         MobileElement mobileDataButton = driver.findElement(MobileBy.iOSClassChain("**/XCUIElementTypeCell[`label == \"Mobile Data\"`]"));
 
-        for (int i=0; i<=2; i++) {
+        for (int i = 0; i <= 2; i++) {
             mobileDataButton.click();
             driver.navigate().back();
         }
@@ -51,8 +52,8 @@ public class Tests {
         driver = new IOSDriver<>(new URL("http://127.0.0.1:4841/wd/hub"), capabilities);
         WebDriverWait wait = new WebDriverWait(driver, 10);
 
-        for (int i=0; i<=2; i++) {
-        wait.until(ExpectedConditions.presenceOfElementLocated(MobileBy.image(image))).click();
+        for (int i = 0; i <= 2; i++) {
+            wait.until(ExpectedConditions.presenceOfElementLocated(MobileBy.image(image))).click();
             driver.navigate().back();
         }
     }
@@ -61,7 +62,6 @@ public class Tests {
     public void safariTest() throws MalformedURLException, InterruptedException {
         DesiredCapabilities capabilities = new DesiredCapabilities();
         capabilities.setCapability("browserName", "safari");
-
         driver = new IOSDriver<>(new URL("http://127.0.0.1:4841/wd/hub"), capabilities);
         driver.get("http://saucelabs.com/test/guinea-pig");
 
