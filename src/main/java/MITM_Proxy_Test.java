@@ -6,6 +6,7 @@ import org.mockserver.configuration.ConfigurationProperties;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.matchers.Times;
 import org.mockserver.model.HttpForward;
+import org.mockserver.model.HttpRequest;
 import org.mockserver.verify.Verification;
 import org.mockserver.verify.VerificationTimes;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -53,7 +54,8 @@ public class MITM_Proxy_Test {
 //        proxyUtils.activateCertificateAbout();
 //        proxyUtils.addProxyConfig("192.168.1.7", "8866");
         //String mockServerCA = loadFileFromLocation("/org/mockserver/socket/CertificateAuthorityCertificate.pem");
-        ConfigurationProperties.certificateAuthorityCertificate("/home/kolio/CertificateAuthorityCertificate.pem");
+        ConfigurationProperties.certificateAuthorityCertificate("/home/kolio/Downloads/certs_wild.betfair.com.pem");
+        ConfigurationProperties.certificateAuthorityPrivateKey("/home/kolio/Downloads/private_key_PKCS_8.pem");
         proxy = ClientAndServer.startClientAndServer(8866);
         System.setProperty("http.proxyHost", "192.168.1.7");
         System.setProperty("http.proxyPort", String.valueOf(proxy.getLocalPort()));
@@ -95,18 +97,33 @@ public class MITM_Proxy_Test {
                 ).forward(
                 HttpForward.forward().withHost("https://abv.bg")
         );
+        proxy
+                .when(
+                        request()
+                                .withMethod("GET")
+        );
+        proxy
+                .when(
+                        request()
+                                .withPath("/pp-games-native/sportsbookWrapper/miniGamesEmbeddedConfig.json")
+                );
         DesiredCapabilities safariCapabilities = new DesiredCapabilities();
-        safariCapabilities.setCapability("browserName", "safari");
-        safariCapabilities.setCapability("nativeWebTap", "true");
+        //safariCapabilities.setCapability("browserName", "safari");
+        //safariCapabilities.setCapability("nativeWebTap", "true");
+        safariCapabilities.setCapability("bundleId", "com.paddypower.sportsbook.u.inhouse.wrapper");
         IOSDriver driver = new IOSDriver<>(new URL("http://127.0.0.1:4841/wd/hub"), safariCapabilities);
         Thread.sleep(15000);
-        driver.get("http://dummy.restapiexample.com/api/v1/employees");
-        String pageSource = driver.getPageSource();
-        Assert.assertTrue(pageSource.contains("Foshizzle"));
-        driver.get("http://dummy.restapiexample.com/api/v1/employees");
-        pageSource = driver.getPageSource();
-        Assert.assertTrue(!pageSource.contains("koliotest"));
-        driver.quit();
+        HttpRequest[] recordedRequests = proxy.retrieveRecordedRequests(request().withMethod("GET"));
+        System.out.println("test 1: " + recordedRequests[0]);
+        System.out.println("test");
+        Thread.sleep(15000);
+//        driver.get("http://dummy.restapiexample.com/api/v1/employees");
+//        String pageSource = driver.getPageSource();
+//        Assert.assertTrue(pageSource.contains("Foshizzle"));
+//        driver.get("http://dummy.restapiexample.com/api/v1/employees");
+//        pageSource = driver.getPageSource();
+//        Assert.assertTrue(!pageSource.contains("koliotest"));
+//        driver.quit();
     }
 
     public String loadFileFromLocation(String location) throws IOException {
