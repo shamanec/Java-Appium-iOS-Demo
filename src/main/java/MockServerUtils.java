@@ -81,12 +81,10 @@ public class MockServerUtils {
         }
         certificateSettings.click();
         WebElement mitmProxyCertToggle = driver.findElement(MobileBy.iOSClassChain("**/XCUIElementTypeSwitch[`label == \"www.mockserver.com\"`]"));
-        if (mitmProxyCertToggle.isEnabled()) {
-            driver.quit();
-        } else {
-            mitmProxyCertToggle.click();
-            driver.quit();
-        }
+        mitmProxyCertToggle.click();
+        WebElement continueButton = driver.findElement(MobileBy.iOSClassChain("**/XCUIElementTypeButton[`label == \"Continue\"`]"));
+        continueButton.click();
+        driver.quit();
     }
 
     public void removeCertificate() throws MalformedURLException {
@@ -111,5 +109,57 @@ public class MockServerUtils {
         removeCertButton.click();
         WebElement confirmRemoveCertButton = driver.findElement(MobileBy.iOSClassChain("**/XCUIElementTypeButton[`label == \"Remove\"`]"));
         confirmRemoveCertButton.click();
+    }
+
+    public void addProxyConfig(String ipAddress, String port) throws MalformedURLException, InterruptedException {
+        Map<String, Object> args = new HashMap<>();
+        args.put("direction", "up");
+        DesiredCapabilities capabilitiesDevice = new DesiredCapabilities();
+        capabilitiesDevice.setCapability("bundleId", "com.apple.Preferences");
+        IOSDriver driver = new IOSDriver<>(new URL("http://127.0.0.1:4841/wd/hub"), capabilitiesDevice);
+        WebElement wifiSectionButton = driver.findElement(MobileBy.iOSClassChain("**/XCUIElementTypeCell[`label == \"Wi-Fi\"`]"));
+        wifiSectionButton.click();
+        WebElement connectedWifiMoreInfoButton = driver.findElement(MobileBy.iOSClassChain("**/XCUIElementTypeCell[$type=='XCUIElementTypeImage' AND name=='checkmark'$]/XCUIElementTypeButton"));
+        connectedWifiMoreInfoButton.click();
+        WebElement proxyConfigButton = driver.findElement(MobileBy.iOSClassChain("**/XCUIElementTypeCell[$name=='Configure Proxy'$]"));
+        while (!proxyConfigButton.isDisplayed()) {
+            driver.executeScript("mobile: swipe", args);
+        }
+        proxyConfigButton.click();
+        WebElement manualConfigButton = driver.findElement(MobileBy.iOSClassChain("**/XCUIElementTypeStaticText[`label == \"Manual\"`]"));
+        manualConfigButton.click();
+        WebElement serverField = driver.findElement(MobileBy.iOSClassChain("**/XCUIElementTypeTextField[`label == \"Server\"`]"));
+        serverField.click();
+        Thread.sleep(500);
+        serverField.sendKeys(ipAddress);
+        WebElement portField = driver.findElement(MobileBy.iOSClassChain("**/XCUIElementTypeTextField[`label == \"Port\"`]"));
+        portField.click();
+        Thread.sleep(500);
+        portField.sendKeys(port);
+        WebElement saveButton = driver.findElement(MobileBy.iOSClassChain("**/XCUIElementTypeButton[`label == \"Save\"`]"));
+        saveButton.click();
+        driver.quit();
+    }
+
+    public void removeProxyConfig() throws MalformedURLException {
+        Map<String, Object> args = new HashMap<>();
+        args.put("direction", "up");
+        DesiredCapabilities capabilitiesDevice = new DesiredCapabilities();
+        capabilitiesDevice.setCapability("bundleId", "com.apple.Preferences");
+        IOSDriver driver = new IOSDriver<>(new URL("http://127.0.0.1:4841/wd/hub"), capabilitiesDevice);
+        WebElement wifiSectionButton = driver.findElement(MobileBy.iOSClassChain("**/XCUIElementTypeCell[`label == \"Wi-Fi\"`]"));
+        wifiSectionButton.click();
+        WebElement connectedWifiMoreInfoButton = driver.findElement(MobileBy.iOSClassChain("**/XCUIElementTypeCell[$type=='XCUIElementTypeImage' AND name=='checkmark'$]/XCUIElementTypeButton"));
+        connectedWifiMoreInfoButton.click();
+        WebElement proxyConfigButton = driver.findElement(MobileBy.iOSClassChain("**/XCUIElementTypeCell[$name=='Configure Proxy'$]"));
+        while (!proxyConfigButton.isDisplayed()) {
+            driver.executeScript("mobile: swipe", args);
+        }
+        proxyConfigButton.click();
+        WebElement offButton = driver.findElement(MobileBy.iOSClassChain("**/XCUIElementTypeStaticText[`label == \"Off\"`]"));
+        offButton.click();
+        WebElement saveButton = driver.findElement(MobileBy.iOSClassChain("**/XCUIElementTypeButton[`label == \"Save\"`]"));
+        saveButton.click();
+        driver.quit();
     }
 }

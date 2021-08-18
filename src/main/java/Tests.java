@@ -50,8 +50,7 @@ public class Tests {
         WebDriverWait wait = new WebDriverWait(driver, 10);
 
         for (int i = 0; i <= 2; i++) {
-            //wait.until(ExpectedConditions.presenceOfElementLocated(MobileBy.image(image))).click();
-            driver.findElement(MobileBy.image(image)).click();
+            wait.until(ExpectedConditions.presenceOfElementLocated(MobileBy.image(image))).click();
             driver.navigate().back();
         }
     }
